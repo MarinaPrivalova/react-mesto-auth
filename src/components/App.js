@@ -52,6 +52,7 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+          openInfoTooltipPopup(false);
         });
     }  
   }, [loggedIn]);
@@ -64,6 +65,7 @@ function App() {
         })
         .catch((err) => { 
           console.log(err);
+          openInfoTooltipPopup(false);
         });
     }    
   }, [loggedIn])
@@ -118,6 +120,7 @@ function App() {
       })
       .catch((err) => { 
         console.log(err);
+        openInfoTooltipPopup(false);
       })
   } 
 
@@ -129,6 +132,7 @@ function App() {
       .then(() => closePopups())
       .catch((err) => { 
         console.log(err);
+        openInfoTooltipPopup(false);
       })
       .finally(() => renderLoading())
   }
@@ -141,6 +145,7 @@ function App() {
       })
       .catch((err) => { 
         console.log(err);
+        openInfoTooltipPopup(false);
       })
       .finally(() => renderLoading())
   }
@@ -154,6 +159,7 @@ function App() {
       })
       .catch((err) => { 
         console.log(err);
+        openInfoTooltipPopup(false);
       })
       .finally(() => renderLoading())
   };
@@ -167,6 +173,7 @@ function App() {
       })
       .catch((err) => { 
         console.log(err);
+        openInfoTooltipPopup(false);
       })
       .finally(() => renderLoading())
   };
@@ -185,6 +192,7 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+          openInfoTooltipPopup(false);
         })
     }
   };
@@ -205,6 +213,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        openInfoTooltipPopup(false);
       })
   };
 
@@ -222,6 +231,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        openInfoTooltipPopup(false);
       })
   };
 
