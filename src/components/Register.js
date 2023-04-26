@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useState} from "react";
 import { Link } from "react-router-dom";
 
-function Register() {
+function Register(props) {
+
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  function handleChangeEmail(e) {
+    setEmail(e.target.value);
+  }
+  function handleChangePassword(e) {
+    setPassword(e.target.value);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    props.onRegister({ email, password });
+  }
+
   return (
     <div className="auth">
       <h2 className="auth__title">Регистрация</h2>
-      <form className="auth__form">
+      <form className="auth__form" onSubmit={handleSubmit}>
         <fieldset className="auth__fieldset">
           <input
             type="email"
@@ -13,6 +29,7 @@ function Register() {
             className="auth__input"
             placeholder="Email"
             required=""
+            onChange={handleChangeEmail}
           />
           <input
             type="password"
@@ -22,6 +39,7 @@ function Register() {
             minLength={8}
             maxLength={50}
             required=""
+            onChange={handleChangePassword}
           />
         </fieldset>
         <button className="auth__submit">Зарегистрироваться</button>

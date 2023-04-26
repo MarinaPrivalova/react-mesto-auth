@@ -11,7 +11,9 @@ function Header(props) {
  
   return (
     <header className='header'>
-      <img src={logo} className='header__logo' alt='Логотип Место Россия' />
+      <Link to='/mesto-react'>
+        <img src={logo} className='header__logo' alt='Логотип Место Россия' />
+      </Link>
       <div className='header__info'>
         {loggedIn && <p className="header__email">{email}</p>}
         {!loggedIn && <Link to={linkPath} className="header__link header__button-logout">{buttonText}</Link>}

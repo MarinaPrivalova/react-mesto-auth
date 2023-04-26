@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -13,6 +13,7 @@ import ImagePopup from './ImagePopup';
 import DeletedCardPopup from './DeleteCardPopup';
 import { CurrentUserContext, defaultCurrentUser } from '../contexts/CurrentUserContext';
 import api from '../utils/Api';
+import * as apiAuth from '../utils/apiAuth';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -41,6 +42,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isSignIn, setIsSignIn] = useState(true);
 
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     if(loggedIn) {
       api.getUserInfo()
@@ -48,7 +51,7 @@ function App() {
           setCurrentUser({ ...currentUser, ...data })
         })
         .catch((err) => {
-          console.log(err); 
+          console.log(err);
         });
     }  
   }, [loggedIn]);
@@ -113,7 +116,9 @@ function App() {
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
       })
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        console.log(err);
+      })
   } 
 
   function handleCardDelete() {
@@ -122,7 +127,9 @@ function App() {
         setCards((cards) => cards.filter((item) => item._id !== selectedCard._id))
       })
       .then(() => closePopups())
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        console.log(err);
+      })
       .finally(() => renderLoading())
   }
 
@@ -132,7 +139,9 @@ function App() {
         setCards([newCard, ...cards]);
         closePopups();
       })
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        console.log(err);
+      })
       .finally(() => renderLoading())
   }
 
@@ -140,10 +149,12 @@ function App() {
   function handleUpdateUser(userData) {
     api.updateUserInfo(userData)
       .then((userDataServer) => {
-        setCurrentUser(userDataServer)
+        setCurrentUser({ ...currentUser, ...userDataServer })
         closePopups()
       })
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        console.log(err);
+      })
       .finally(() => renderLoading())
   };
 
@@ -151,13 +162,70 @@ function App() {
   function handleUpdateAvatar(userAvatar) {
     api.updateUserAvatar(userAvatar)
       .then((userAvatarServer) => {
-        setCurrentUser(userAvatarServer)
+        setCurrentUser({ ...currentUser, ...userAvatarServer })
         closePopups()
       })
-      .catch((err) => { console.log(err) })
+      .catch((err) => { 
+        console.log(err);
+      })
       .finally(() => renderLoading())
   };
 
+  /**Получить токен*/
+  function checkToken() {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      apiAuth.checkToken(token)
+        .then((res) => {
+          if (res && res.data) {
+            setLoggedIn(true);
+            setCurrentUser({ ...currentUser, email: res.data.email });
+            navigate('/');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  };
+  React.useEffect(() => {
+    checkToken();
+  }, []);
+
+  /**Зарегистрировать пользователя*/
+  function handleRegister(regData) {
+    apiAuth.register(regData)
+      .then((res) => {
+        if (res && res.data) {
+          openInfoTooltipPopup(true);
+          navigate('/sign-in');
+        } else {
+            openInfoTooltipPopup(false);
+          }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
+
+  /**Войти в профиль*/
+  function handleLogin(loginData) {
+    apiAuth.login(loginData)
+      .then((res) => {
+        if (res && res.token) {
+          setCurrentUser({ ...currentUser, email: loginData.email })
+          localStorage.setItem('jwt', res.token);
+          checkToken();
+        } else {
+            openInfoTooltipPopup(false);
+          }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
+
+  /**Выйти из профиля*/
   function logOut() {
     setLoggedIn(false);
     setCurrentUser(defaultCurrentUser);
@@ -175,12 +243,12 @@ function App() {
           />
 
           <Routes>
-            <Route path='/sign-up' element={<Register />} />
-            <Route path='/sign-in' element={<Login />} />
+            <Route path='/sign-up' element={<Register onRegister={handleRegister} />} />
+            <Route path='/sign-in' element={<Login onLogin={handleLogin} />} />
             <Route path='/' 
               element={<ProtectedRoute
                 loggedIn={loggedIn}
-                element={<Main />}
+                element={Main}
                 onEditAvatar={handleEditAvatarClick}
                 onEditProfile={handleEditProfileClick}
                 onAddPlace={handleAddPlaceClick}
