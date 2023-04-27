@@ -10,13 +10,11 @@ function Header(props) {
 
   return (
     <header className='header'>
-      <Link to='/mesto-react'>
         <img src={logo} className='header__logo' alt='Логотип Место Россия' />
-      </Link>
       <div className='header__info'>
         {loggedIn && <p className="header__email">{email}</p>}
         <Routes>
-          <Route path='/mesto-react' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
+          <Route path='/react-mesto-auth' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
           <Route path='/sign-up' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
           <Route path='/sign-in' element={<Link to='/sign-up' className="header__link header__button-logout">Регистрация</Link>} />
         </Routes>
