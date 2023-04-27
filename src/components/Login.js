@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 function Login(props) {
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function handleChangeEmail(e) {
     setEmail(e.target.value);
@@ -25,6 +25,7 @@ function Login(props) {
           <input
             type="email"
             name="email"
+            value={email}
             className="auth__input"
             placeholder="Email"
             required=""
@@ -33,6 +34,7 @@ function Login(props) {
           <input
             type="password"
             name="password"
+            value={password}
             className="auth__input"
             placeholder="Пароль"
             minLength={8}

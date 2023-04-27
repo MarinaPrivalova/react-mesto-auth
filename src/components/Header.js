@@ -1,14 +1,13 @@
 import React from 'react';
 import logo from '../images/header_logo.svg';
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useLocation, Routes, Route } from 'react-router-dom';
 
 function Header(props) {
   const { loggedIn, email, logOut } = props;
   const location = useLocation();
   const linkText = (location.pathname === '/sign-in') ? 'Регистрация' : 'Войти';
   const buttonText = loggedIn ? 'Выйти' : linkText;
-  const linkPath = (location.pathname === '/sign-in') ? '/sign-up' : '/sign-in';
- 
+
   return (
     <header className='header'>
       <Link to='/mesto-react'>
@@ -16,7 +15,11 @@ function Header(props) {
       </Link>
       <div className='header__info'>
         {loggedIn && <p className="header__email">{email}</p>}
-        {!loggedIn && <Link to={linkPath} className="header__link header__button-logout">{buttonText}</Link>}
+        <Routes>
+          <Route path='/mesto-react' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
+          <Route path='/sign-up' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
+          <Route path='/sign-in' element={<Link to='/sign-up' className="header__link header__button-logout">Регистрация</Link>} />
+        </Routes>
         {loggedIn && <button className="header__link header__button-logout" onClick={logOut}>{buttonText}</button>}
       </div>
     </header>

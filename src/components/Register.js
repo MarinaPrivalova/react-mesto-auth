@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 function Register(props) {
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function handleChangeEmail(e) {
     setEmail(e.target.value);
@@ -26,6 +26,7 @@ function Register(props) {
           <input
             type="email"
             name="email"
+            value={email}
             className="auth__input"
             placeholder="Email"
             required=""
@@ -34,6 +35,7 @@ function Register(props) {
           <input
             type="password"
             name="password"
+            value={password}
             className="auth__input"
             placeholder="Пароль"
             minLength={8}

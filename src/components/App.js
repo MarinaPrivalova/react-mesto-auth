@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
@@ -44,30 +44,18 @@ function App() {
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if(loggedIn) {
-      api.getUserInfo()
-        .then((data) => {
-          setCurrentUser({ ...currentUser, ...data })
+      Promise.all([api.getUserInfo(), api.getAllCards()])
+        .then(([data, cards]) => {
+          setCurrentUser({ ...currentUser, ...data });
+          setCards(cards);
         })
         .catch((err) => {
           console.log(err);
           openInfoTooltipPopup(false);
-        });
-    }  
-  }, [loggedIn]);
-
-  React.useEffect(() => {
-    if(loggedIn) {
-      api.getAllCards()
-        .then((cards) => {
-          setCards(cards);
         })
-        .catch((err) => { 
-          console.log(err);
-          openInfoTooltipPopup(false);
-        });
-    }    
+    }
   }, [loggedIn])
 
   /**Рендер загрузки*/
@@ -196,7 +184,7 @@ function App() {
         })
     }
   };
-  React.useEffect(() => {
+  useEffect(() => {
     checkToken();
   }, []);
 
@@ -207,9 +195,7 @@ function App() {
         if (res && res.data) {
           openInfoTooltipPopup(true);
           navigate('/sign-in');
-        } else {
-            openInfoTooltipPopup(false);
-          }
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -225,9 +211,7 @@ function App() {
           setCurrentUser({ ...currentUser, email: loginData.email })
           localStorage.setItem('jwt', res.token);
           checkToken();
-        } else {
-            openInfoTooltipPopup(false);
-          }
+        }
       })
       .catch((err) => {
         console.log(err);
